@@ -4,5 +4,5 @@ test_project
 .metadata
 .recommenders
 
-kpi_training_block_1/bin/*
-kpi_training_block_2/bin/*
+#kpi_training_block_1/bin/*
+#kpi_training_block_2/bin/*

@@ -18,6 +18,10 @@ public class View {
     public static final String MORE_VALUE = "Value is bigger!";
     public static final String HIT_VALUE = "Congrats! Value is guessed!";
     public static final String NUMBER_OF_MISSES = "You missed ";
+
+    
+    public static final String SPACE_STRING = " ";
+    public static final char CHAR_COMMA = ',';
     
 
     public void printMessage(String message){

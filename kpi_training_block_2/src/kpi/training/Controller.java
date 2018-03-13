@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Controller {
     
+    
     private Model model;
     private View view;
 
@@ -20,17 +21,18 @@ public class Controller {
     public void processUser(){
         Scanner sc = new Scanner(System.in);
         playGame(sc);
-        outputStatistic(sc);
     }
 
     private void playGame(Scanner sc) {
-        out:
-        while (true) {
+        model.initRandom();
+        boolean end = false;
+        while (!end) {
             int value = inputIntValueWithScannerAndRange(sc);
             switch(model.processValue(value)) {
             case HIT:
                 view.printMessage(View.HIT_VALUE);
-                break out;
+                end = true;
+                break;
             case LESS:
                 view.printMessage(View.LESS_VALUE);
                 break;
@@ -40,10 +42,11 @@ public class Controller {
             default:
             }
         }
+        outputStatistic(sc);
     }
 
     private void outputStatistic(Scanner sc) {
-        view.printMessage(View.NUMBER_OF_MISSES + " " + model.getMissCount());
+        view.printMessage(View.NUMBER_OF_MISSES + View.SPACE_STRING + model.getMissCount());
     }
 
     public int inputIntValueWithScanner(Scanner sc) {
@@ -57,7 +60,7 @@ public class Controller {
 
     public int inputIntValueWithScannerAndRange(Scanner sc) {
         view.printMessage(View.RANGE_DATA +
-                model.getRangeMin() + ',' + model.getRangeMax());
+                model.getRangeMin() + View.CHAR_COMMA + model.getRangeMax());
         int value = inputIntValueWithScanner(sc);
 
         while (!checkValueInRange(value)) {

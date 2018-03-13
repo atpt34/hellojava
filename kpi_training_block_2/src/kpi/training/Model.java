@@ -4,19 +4,18 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Model {
     
+    private static final int DEFAULT_RANGE_MAX = 100;
+    private static final int DEFAULT_RANGE_MIN = 0;
+    
     private int random;
-    private int rangeMin = 0;
-    private int rangeMax = 100;
+    private int rangeMin = DEFAULT_RANGE_MIN;
+    private int rangeMax = DEFAULT_RANGE_MAX;
     private int missCount = 0;
 
-    public Model() {
+    public void initRandom() {
         random = rand(rangeMin, rangeMax);
     }
     
-    private int rand(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max + 1);
-    }
-
     public int getRangeMin() {
         return rangeMin;
     }
@@ -59,4 +58,9 @@ public class Model {
     public boolean checkValueInRange(int val) {
         return val >= rangeMin && val <= rangeMax;
     }
+    
+    public static int rand(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+
 }
