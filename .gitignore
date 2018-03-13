@@ -1,0 +1,8 @@
+auth_lab_1
+new_play
+test_project
+.metadata
+.recommenders
+
+kpi_training_block_1/bin/*
+kpi_training_block_2/bin/*
