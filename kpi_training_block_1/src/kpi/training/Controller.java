@@ -2,6 +2,8 @@ package kpi.training;
 
 import java.util.Scanner;
 
+import kpi.training.businesslogic.Model;
+
 public class Controller {
 
     Model model;

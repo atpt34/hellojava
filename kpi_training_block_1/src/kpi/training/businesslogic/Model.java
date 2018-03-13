@@ -1,4 +1,4 @@
-package kpi.training;
+package kpi.training.businesslogic;
 
 public class Model {
     
