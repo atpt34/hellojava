@@ -1,4 +1,4 @@
-package ua.training;
+package ua.training.model;
 
 public interface StringConstants {
 

@@ -1,4 +1,4 @@
-package ua.training;
+package ua.training.main;
 
 import ua.training.controller.Controller;
 import ua.training.model.PersonBook;

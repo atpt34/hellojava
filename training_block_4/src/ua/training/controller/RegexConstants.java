@@ -1,4 +1,4 @@
-package ua.training;
+package ua.training.controller;
 
 public interface RegexConstants {
 

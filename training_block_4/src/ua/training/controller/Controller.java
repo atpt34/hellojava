@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import ua.training.RegexConstants;
 import ua.training.model.Address;
 import ua.training.model.Group;
 import ua.training.model.Person;
