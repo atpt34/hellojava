@@ -1,217 +1,188 @@
 package ua.training.tasktwo;
 
+import java.lang.reflect.Array;
 import java.util.AbstractList;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
+import java.util.RandomAccess;
 
-public class MyArrayList<E> extends AbstractList<E> {
+/**
+ * 
+ * @author atpt34
+ *
+ * @param <E>
+ */
+public class MyArrayList<E> extends AbstractList<E> 
+    implements List<E>, RandomAccess, Cloneable, java.io.Serializable
+{
 
-    private ArrayList<E> values;
+    private static final long serialVersionUID = -7912989857716725259L;
+    private static final int DEFAULT_CAPACITY = 10;
+    private E[] elements;
+    private int size;
     
-    public MyArrayList() {
-        this.values = new ArrayList<E>();
+    public MyArrayList(Class<E> clazz) {
+        this(clazz, DEFAULT_CAPACITY);
     }
     
-    public MyArrayList(int capacity) {
-        this.values = new ArrayList<E>(capacity);
+    
+    @SuppressWarnings("unchecked")
+    public MyArrayList(Class<E> clazz, int capacity) {
+        if (capacity <= 0)
+            throw new IllegalArgumentException("Illegal Capacity: "+
+                capacity);
+        this.elements = (E[]) Array.newInstance(clazz, capacity);
     }
     
-    public MyArrayList(Collection<E> values) {
-        this.values = new ArrayList<E>(values);
+    public MyArrayList(Class<E> clazz, Collection<? extends E> c) {
+        this(clazz, c.size());
+        size = c.size();
+        c.toArray(elements);
     }
-
-    @Override
-    public void replaceAll(UnaryOperator<E> operator) {
-        values.replaceAll(operator);
+    
+    public int getCurrentCapacity() {
+        return elements.length;
     }
-
-    @Override
-    public void sort(Comparator<? super E> c) {
-        values.sort(c);
-    }
-
-    @Override
-    public Spliterator<E> spliterator() {
-        return values.spliterator();
-    }
-
-    @Override
-    public boolean removeIf(Predicate<? super E> filter) {
-        return values.removeIf(filter);
-    }
-
-    @Override
-    public Stream<E> stream() {
-        return values.stream();
-    }
-
-    @Override
-    public Stream<E> parallelStream() {
-        return values.parallelStream();
-    }
-
-    @Override
-    public void forEach(Consumer<? super E> action) {
-        values.forEach(action);
+    
+    private void ensureCapacityInternal(int newSize) {
+        if (elements.length < newSize) {
+            int newCapacity = elements.length << 1;
+            elements = Arrays.copyOf(elements, newCapacity);
+        }
     }
 
     @Override
     public boolean add(E e) {
-        return values.add(e);
-    }
-
-    @Override
-    public E set(int index, E element) {
-        return values.set(index, element);
+        ensureCapacityInternal(size + 1);  
+        elements[size++] = e;
+        return true;
     }
 
     @Override
     public void add(int index, E element) {
-        values.add(index, element);
+        rangeCheck(index);
+        ensureCapacityInternal(size + 1);  
+        System.arraycopy(elements, index, elements, index + 1,
+                         size - index);
+        elements[index] = element;
+        size++;
     }
 
     @Override
+    public E set(int index, E element) {
+        rangeCheck(index);
+        E oldValue = elementData(index);
+        elements[index] = element;
+        return oldValue;
+    }
+    
+    @Override
     public E remove(int index) {
-        return values.remove(index);
+        throw new UnsupportedOperationException("remove method is not supported");
     }
 
     @Override
     public int indexOf(Object o) {
-        return values.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return values.lastIndexOf(o);
-    }
-
-    @Override
-    public void clear() {
-        values.clear();
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
-        return values.addAll(index, c);
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return values.iterator();
-    }
-
-    @Override
-    public ListIterator<E> listIterator() {
-        return values.listIterator();
-    }
-
-    @Override
-    public ListIterator<E> listIterator(int index) {
-        return values.listIterator(index);
-    }
-
-    @Override
-    public List<E> subList(int fromIndex, int toIndex) {
-        return values.subList(fromIndex, toIndex);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return values.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        // TODO Auto-generated method stub
-        return values.hashCode();
+        if (o == null) {
+            for (int i = 0; i < size; i++)
+                if (elements[i]==null)
+                    return i;
+        } else {
+            for (int i = 0; i < size; i++)
+                if (o.equals(elements[i]))
+                    return i;
+        }
+        return -1;
     }
 
     @Override
     protected void removeRange(int fromIndex, int toIndex) {
-        super.removeRange(fromIndex, toIndex);
+        throw new UnsupportedOperationException("remove method is not supported");
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return values.isEmpty();
+        return size == 0;
     }
 
     @Override
     public boolean contains(Object o) {
-        // TODO Auto-generated method stub
-        return values.contains(o);
+        return indexOf(o) >= 0;
     }
 
-    @Override
-    public Object[] toArray() {
-        // TODO Auto-generated method stub
-        return values.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        // TODO Auto-generated method stub
-        return values.toArray(a);
-    }
 
     @Override
     public boolean remove(Object o) {
-        // TODO Auto-generated method stub
-        return values.remove(o);
-    }
+        throw new UnsupportedOperationException("remove method is not supported");
 
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        return values.containsAll(c);
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        // TODO Auto-generated method stub
-        return values.addAll(c);
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        return values.removeAll(c);
+        throw new UnsupportedOperationException("remove method is not supported");
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        return values.retainAll(c);
+    protected Object clone() {
+        throw new UnsupportedOperationException("clone method is not supported");
     }
 
-    @Override
-    public String toString() {
-        return values.toString();
+    E elementData(int index) {
+        return elements[index];
     }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return values.clone();
-    }
-
+    
     @Override
     public E get(int index) {
-        return values.get(index);
+        rangeCheck(index);
+
+        return elementData(index);
+    }
+    
+    private void rangeCheck(int index) {
+        if (index > size || index < 0)
+            throw new IndexOutOfBoundsException("index out of bound");
     }
 
     @Override
     public int size() {
-        return values.size();
+        return size;
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Arrays.hashCode(elements);
+        result = prime * result + size;
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        MyArrayList<?> other = (MyArrayList<?>) obj;
+        if (!Arrays.equals(elements, other.elements))
+            return false;
+        if (size != other.size)
+            return false;
+        return true;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("MyArrayList [elements=").append(Arrays.toString(elements)).append(", size=").append(size)
+                .append("]");
+        return builder.toString();
     }
 
 }
