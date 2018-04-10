@@ -1,5 +1,7 @@
 package ua.training.quickmaven.model;
 
+import java.util.Objects;
+
 public class User implements Cloneable {
 
     private String name;
@@ -9,6 +11,8 @@ public class User implements Cloneable {
     }
     
     public User(String name, String nickName) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(nickName);
         this.name = name;
         this.nickName = nickName;
     }
@@ -18,6 +22,7 @@ public class User implements Cloneable {
     }
 
     public void setName(String name) {
+        Objects.requireNonNull(name);
         this.name = name;
     }
 
@@ -26,19 +31,25 @@ public class User implements Cloneable {
     }
 
     public void setNickName(String nickName) {
+        Objects.requireNonNull(nickName);
         this.nickName = nickName;
     }
 
-    @Override
+/*    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((nickName == null) ? 0 : nickName.hashCode());
         return result;
+    }*/
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, nickName);
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -58,6 +69,16 @@ public class User implements Cloneable {
         } else if (!nickName.equals(other.nickName))
             return false;
         return true;
+    }*/
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            User that = (User) obj;
+            return Objects.equals(this.name, that.name)
+                    && Objects.equals(this.nickName, that.nickName);
+        }
+        return false;
     }
 
     @Override
@@ -73,7 +94,7 @@ public class User implements Cloneable {
         return copy;
     }
     
-    @Override
+/*    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("User [name=");
@@ -82,5 +103,10 @@ public class User implements Cloneable {
         builder.append(nickName);
         builder.append("]");
         return builder.toString();
+    }*/
+    
+    @Override
+    public String toString() {
+        return Objects.toString(name) + " " + Objects.toString(nickName);
     }
 }
