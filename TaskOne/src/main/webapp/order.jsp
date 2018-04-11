@@ -20,10 +20,10 @@
     <form method="POST"
             action="${pageContext.request.contextPath}/app/processOrder?travelId=${elem.id}">
     <!--        id <input type="text" name="id"  /> <br> -->
-        name <input type="text" name="name" /> <br>
-        phone <input type="text" name="phone" /> <br>
-        number of days <input type="text" name="days"  /> <br>
-        number of people <input type="text" name="quantity" /> <br>
+        name <input type="text" name="name" value="Oleksii"/> <br>
+        phone <input type="text" name="phone" value="0670880808" /> <br>
+        number of days <input type="text" name="days" value="14" /> <br>
+        number of people <input type="text" name="quantity" value="1" /> <br>
         <input style="font-size:200%;" type="submit" value="Order" />
     </form>
 </body>

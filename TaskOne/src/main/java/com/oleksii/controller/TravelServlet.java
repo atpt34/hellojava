@@ -61,10 +61,7 @@ public class TravelServlet extends HttpServlet {
         System.out.println(path);
         Command command = commands.getOrDefault(path , new DefaultCommand());
         String page = command.execute(request);
-//        if(page.contains("redirect")){
-//            response.sendRedirect(page.replace("redirect:", "/api"));
-//        }else {
-            request.getRequestDispatcher(page).forward(request, response);
-//        }
+        request.getRequestDispatcher(page).forward(request, response);
+
     }
 }

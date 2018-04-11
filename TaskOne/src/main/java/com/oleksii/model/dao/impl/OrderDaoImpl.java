@@ -20,24 +20,32 @@ public class OrderDaoImpl implements CrudDAO<Order, Integer> {
     @Override
     public Order save(Order o) {
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement prepareStatement = conn.prepareStatement(INSERT_INTO_ORDER_SQL,
-                    Statement.RETURN_GENERATED_KEYS);
-            prepareStatement.setString(1, o.getUsername());
-            prepareStatement.setString(2, o.getUserphone());
-            prepareStatement.setInt(3, o.getTravel().getId());
-            prepareStatement.setInt(4, o.getNumOfDays());
-            prepareStatement.setInt(5, o.getNumOfPeople());
-            prepareStatement.executeUpdate();
-            ResultSet rs = prepareStatement.getGeneratedKeys();
+//            Connection conn = DBConnection.getConnection();
+//            PreparedStatement prepareStatement = conn.prepareStatement(INSERT_INTO_ORDER_SQL,
+//                    Statement.RETURN_GENERATED_KEYS);
+//            prepareStatement.setString(1, o.getUsername());
+//            prepareStatement.setString(2, o.getUserphone());
+//            prepareStatement.setInt(3, o.getTravel().getId());
+//            prepareStatement.setInt(4, o.getNumOfDays());
+//            prepareStatement.setInt(5, o.getNumOfPeople());
+//            prepareStatement.executeUpdate();
+//            ResultSet rs = prepareStatement.getGeneratedKeys();
+            
+            Object[] params = {o.getUsername(), o.getUserphone(), 
+                    o.getTravel().getId(), o.getNumOfDays(), o.getNumOfPeople()};
+            ResultSet rs = DBConnection.makeUpdate(INSERT_INTO_ORDER_SQL, params);
+            
+            
             if (rs != null && rs.next()) {
                 int key = rs.getInt(1);
                 System.out.println("key = " + key);
+                o.setId(key);
             }
-            conn.commit();
+//            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println(o);
         return o;
     }
 

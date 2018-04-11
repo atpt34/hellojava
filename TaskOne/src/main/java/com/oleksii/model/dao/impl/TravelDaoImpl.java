@@ -11,22 +11,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import com.oleksii.model.dao.CrudDAO;
 import com.oleksii.model.entity.Travel;
 import com.oleksii.model.entity.TravelType;
 import com.oleksii.model.util.DBConnection;
 
 public class TravelDaoImpl implements CrudDAO<Travel, Integer> {
-
-//    private DataSource dataSource;
-//    
-//    public void setDataSource(DataSource dataSource) {
-//        this.dataSource = dataSource;
-//    }
-
-
     
     private static final String SELECT_FROM_TRAVEL_SQL = "SELECT * FROM travel";
     private static final String SELECT_FROM_TRAVEL_BY_ID_SQL = "SELECT * FROM travel WHERE id = ?";
@@ -34,18 +24,15 @@ public class TravelDaoImpl implements CrudDAO<Travel, Integer> {
     @Override
     public List<Travel> findAll() {
         List<Travel> result = new ArrayList<>();
+        Connection con = null;
         try {
-            Connection con = DBConnection.getConnection();
-            Statement statement = con.createStatement();
-            ResultSet rs;
-            rs = statement.executeQuery(SELECT_FROM_TRAVEL_SQL);
-//            ResultSetMetaData metaData = rs.getMetaData();
-//            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-//                System.out.println(metaData.getColumnType(i)); // java.sql.Types
-//                System.out.println(metaData.getColumnLabel(i));
-//                System.out.println(metaData.getColumnName(i));
-//                System.out.println(metaData.getColumnClassName(i));
-//            }
+//            con = DBConnection.getConnection();
+//            Statement statement = con.createStatement();
+//            ResultSet rs;
+//            rs = statement.executeQuery(SELECT_FROM_TRAVEL_SQL);
+            
+            ResultSet rs = DBConnection.makeSelect(SELECT_FROM_TRAVEL_SQL, new Object[]{});
+
             while( rs.next()){
                 int id = rs.getInt("id");
                 System.out.println(id);
@@ -61,21 +48,31 @@ public class TravelDaoImpl implements CrudDAO<Travel, Integer> {
                 System.out.println(startDate);
                 result.add(new Travel(id, name, TravelType.convertFromString(type), trans, cost, startDate));
             }
-//            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        } /*finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }          
+        }*/
         return result;
     }
 
     @Override
     public Travel findOne(Integer id) {
         try {
-            Connection con = DBConnection.getConnection();
-            PreparedStatement prepareStatement = con.prepareStatement(SELECT_FROM_TRAVEL_BY_ID_SQL);
-            prepareStatement.setInt(1, id);
-            ResultSet rs;
-            rs = prepareStatement.executeQuery();
+//            Connection con = DBConnection.getConnection();
+//            PreparedStatement prepareStatement = con.prepareStatement(SELECT_FROM_TRAVEL_BY_ID_SQL);
+//            prepareStatement.setInt(1, id);
+//            ResultSet rs;
+//            rs = prepareStatement.executeQuery();
+            
+            ResultSet rs = DBConnection.makeSelect(SELECT_FROM_TRAVEL_BY_ID_SQL, new Object[]{id});
+            
             if(rs.next()) {
                 String name = rs.getString("name");
                 System.out.println(name);
