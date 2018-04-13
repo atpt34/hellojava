@@ -5,13 +5,13 @@ import java.util.Objects;
 import com.oleksii.model.util.ArgumentChecker;
 
 public class Order extends AbstractEntity<Integer> {
-    
+
     private Travel travel;
     private String username;
     private String userphone;
     private int numOfDays;
     private int numOfPeople;
-    
+
     public Order(int id, Travel travel, String username, String userphone, int numOfDays, int numOfPeople) {
         super(id);
         Objects.requireNonNull(travel);
@@ -75,7 +75,7 @@ public class Order extends AbstractEntity<Integer> {
     public Integer getId() {
         return super.getId();
     }
-    
+
     @Override
     public void setId(Integer id) {
         super.setId(id);
@@ -132,7 +132,5 @@ public class Order extends AbstractEntity<Integer> {
             return false;
         return true;
     }
-    
-    
 
 }

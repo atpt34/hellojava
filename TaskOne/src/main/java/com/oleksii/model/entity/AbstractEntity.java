@@ -32,6 +32,6 @@ abstract class AbstractEntity<T> {
             return id.equals(that.id);
         }
         return false;
-    }    
-    
+    }
+
 }

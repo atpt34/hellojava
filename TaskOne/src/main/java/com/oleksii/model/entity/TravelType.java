@@ -5,7 +5,7 @@ import java.util.Objects;
 public enum TravelType {
 
     RELAX, EXCURSION, HEALTH, SHOPPING;
-    
+
     public static TravelType convertFromString(String type) {
         Objects.requireNonNull(type);
         String typeInUpperCase = type.toUpperCase();

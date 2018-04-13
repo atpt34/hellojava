@@ -7,7 +7,7 @@ public class ArgumentChecker {
             throw new IllegalArgumentException(message);
         }
     }
-    
+
     public static void checkArgs(boolean pred) {
         checkArgs(pred, "");
     }

@@ -40,7 +40,7 @@ public class Travel extends AbstractEntity<Integer> {
     public Integer getId() {
         return super.getId();
     }
-    
+
     @Override
     public void setId(Integer id) {
         super.setId(id);
@@ -85,9 +85,9 @@ public class Travel extends AbstractEntity<Integer> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Travel [id=").append(super.getId()).append(", name=").append(name).append(", type=").append(type)
-                .append(", transport=").append(transport).append(", start=").append(start).append(", cost=")
-                .append(cost).append("]");
+        builder.append("Travel [id=").append(super.getId()).append(", name=").append(name).append(", type=")
+                .append(type).append(", transport=").append(transport).append(", start=").append(start)
+                .append(", cost=").append(cost).append("]");
         return builder.toString();
     }
 
@@ -100,15 +100,11 @@ public class Travel extends AbstractEntity<Integer> {
     public boolean equals(Object obj) {
         if (obj instanceof Travel) {
             Travel that = (Travel) obj;
-            return super.equals(that) && 
-                    Objects.equals(name, that.name) &&
-                    Objects.equals(start, that.start) &&
-                    Objects.equals(transport, that.transport) &&
-                    Objects.equals(cost, that.cost) &&
-                    Objects.equals(type, that.type);
+            return super.equals(that) && Objects.equals(name, that.name) && Objects.equals(start, that.start)
+                    && Objects.equals(transport, that.transport) && Objects.equals(cost, that.cost)
+                    && Objects.equals(type, that.type);
         }
         return false;
     }
 
-    
 }
