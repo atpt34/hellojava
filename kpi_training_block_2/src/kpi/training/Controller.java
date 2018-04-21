@@ -1,51 +1,63 @@
 package kpi.training;
 
+import java.util.EnumMap;
 import java.util.Scanner;
 
 public class Controller {
     
-    
     private Model model;
     private View view;
-
-    // Constants
-
-    // REGEX
+    
+    private EnumMap<Model.Result, Response> mapResults;
 
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
+        mapResults = new EnumMap<>(Model.Result.class);
+        mapResults.put(Model.Result.HIT, new Controller.HitResponse());
+        mapResults.put(Model.Result.MORE, new MoreResponse());
+        mapResults.put(Model.Result.LESS, new LessResponse());
     }
 
-    //Work method
     public void processUser(){
-        Scanner sc = new Scanner(System.in);
-        playGame(sc);
-    }
-
-    private void playGame(Scanner sc) {
-        model.initRandom();
-        boolean end = false;
-        while (!end) {
+        Scanner sc = new Scanner(System.in);            
+        Response response;
+        do {
             int value = inputIntValueWithScannerAndRange(sc);
-            switch(model.processValue(value)) {
-            case HIT:
-                view.printMessage(View.HIT_VALUE);
-                end = true;
-                break;
-            case LESS:
-                view.printMessage(View.LESS_VALUE);
-                break;
-            case MORE:
-                view.printMessage(View.MORE_VALUE);
-                break;
-            default:
-            }
+            response = mapResults.get(model.processValue(value));
+            response.printMessage();
+        } while(!response.stop());
+        outputStatistic();
+    }
+    
+    private abstract class Response {
+        abstract void printMessage();
+        boolean stop() { return false; }
+    }
+    private class HitResponse extends Response {
+        @Override
+        public void printMessage() {
+            view.printMessage(View.HIT_VALUE);
         }
-        outputStatistic(sc);
+        @Override
+        public boolean stop() {
+            return true;
+        }       
+    }
+    private class MoreResponse extends Response {
+        @Override
+        public void printMessage() {
+            view.printMessage(View.MORE_VALUE);
+        }        
+    }
+    private class LessResponse extends Response {
+        @Override
+        public void printMessage() {
+            view.printMessage(View.LESS_VALUE);
+        }        
     }
 
-    private void outputStatistic(Scanner sc) {
+    private void outputStatistic() {
         view.printMessage(View.NUMBER_OF_MISSES + View.SPACE_STRING + model.getMissCount());
     }
 

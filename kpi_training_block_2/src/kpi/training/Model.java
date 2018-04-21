@@ -12,6 +12,12 @@ public class Model {
     private int rangeMax = DEFAULT_RANGE_MAX;
     private int missCount = 0;
 
+    public Model(int min, int max) {
+        rangeMin = min;
+        rangeMax = max;
+        random = rand(min, max);
+    }
+    
     public void initRandom() {
         random = rand(rangeMin, rangeMax);
     }
@@ -40,7 +46,7 @@ public class Model {
         this.missCount = missCount;
     }
 
-    public enum Result { LESS, HIT, MORE };
+    public enum Result { LESS, HIT, MORE }
     
     public Result processValue(int value) {
         if (value == random) {
