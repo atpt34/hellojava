@@ -7,6 +7,7 @@ Spring*
 Servlet*
 .metadata
 .recommenders
+.sonarlint
 
 #kpi_training_block_1/bin/*
 #kpi_training_block_2/bin/*

@@ -135,7 +135,6 @@ public class MyArrayList<E> extends AbstractList<E>
     @Override
     public E get(int index) {
         rangeCheck(index);
-
         return elementData(index);
     }
     
