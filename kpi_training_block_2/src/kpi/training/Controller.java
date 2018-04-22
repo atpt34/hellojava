@@ -1,26 +1,34 @@
 package kpi.training;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Scanner;
+
+import kpi.training.Model.Result;
 
 public class Controller {
     
     private Model model;
     private View view;
-    
-    private EnumMap<Model.Result, Response> mapResults;
 
     public Controller(Model model, View view) {
         this.model = model;
-        this.view = view;
-        mapResults = new EnumMap<>(Model.Result.class);
-        mapResults.put(Model.Result.HIT, new Controller.HitResponse());
-        mapResults.put(Model.Result.MORE, new MoreResponse());
-        mapResults.put(Model.Result.LESS, new LessResponse());
+        this.view = view;        
+    }
+    
+    private final class ResultMapHolder {
+        private final Map<Model.Result, Response> mapResults;
+        ResultMapHolder() {
+            mapResults = new EnumMap<>(Model.Result.class);
+            mapResults.put(Model.Result.HIT, new HitResponse());
+            mapResults.put(Model.Result.MORE, new MoreResponse());
+            mapResults.put(Model.Result.LESS, new LessResponse());
+        }
     }
 
     public void processUser(){
-        Scanner sc = new Scanner(System.in);            
+        Scanner sc = new Scanner(System.in);
+        Map<Result, Response> mapResults = new ResultMapHolder().mapResults;
         Response response;
         do {
             int value = inputIntValueWithScannerAndRange(sc);
@@ -34,7 +42,7 @@ public class Controller {
         abstract void printMessage();
         boolean stop() { return false; }
     }
-    private class HitResponse extends Response {
+    private final class HitResponse extends Response {
         @Override
         public void printMessage() {
             view.printMessage(View.HIT_VALUE);
@@ -44,13 +52,13 @@ public class Controller {
             return true;
         }       
     }
-    private class MoreResponse extends Response {
+    private final class MoreResponse extends Response {
         @Override
         public void printMessage() {
             view.printMessage(View.MORE_VALUE);
         }        
     }
-    private class LessResponse extends Response {
+    private final class LessResponse extends Response {
         @Override
         public void printMessage() {
             view.printMessage(View.LESS_VALUE);
@@ -75,16 +83,12 @@ public class Controller {
                 model.getRangeMin() + View.CHAR_COMMA + model.getRangeMax());
         int value = inputIntValueWithScanner(sc);
 
-        while (!checkValueInRange(value)) {
+        while (!model.checkValueInRange(value)) {
             view.printMessage(View.WRONG_RANGE_DATA
                     + View.INPUT_INT_DATA);
             value = inputIntValueWithScanner(sc);
         }
         return value;
-    }
-
-    private boolean checkValueInRange(int val) {
-        return model.checkValueInRange(val);
     }
 
 }

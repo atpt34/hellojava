@@ -2,40 +2,50 @@ package kpi.training;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Model {
+/**
+ * 
+ * @author atpt34
+ *
+ */
+public final class Model {
     
     private static final int DEFAULT_RANGE_MAX = 100;
     private static final int DEFAULT_RANGE_MIN = 0;
     
-    private int random;
-    private int rangeMin = DEFAULT_RANGE_MIN;
-    private int rangeMax = DEFAULT_RANGE_MAX;
+    private final int random;
+    private int rangeMin;
+    private int rangeMax;
     private int missCount = 0;
 
-    public Model(int min, int max) {
+    public Model() {
+        rangeMin = DEFAULT_RANGE_MIN;
+        rangeMax = DEFAULT_RANGE_MAX;
+        random = rand(rangeMin, rangeMax);
+    }
+    
+    private Model(int min, int max) {
         rangeMin = min;
         rangeMax = max;
         random = rand(min, max);
     }
     
-    public void initRandom() {
-        random = rand(rangeMin, rangeMax);
+    private Model(Model model) {
+        rangeMax = model.rangeMax;
+        rangeMin = model.rangeMin;
+        random = model.random;
+        missCount = model.missCount;
+    }
+    
+    public static Model of(int min, int max) {
+        return new Model(new Model(min, max));
     }
     
     public int getRangeMin() {
         return rangeMin;
     }
 
-    public void setRangeMin(int rangeMin) {
-        this.rangeMin = rangeMin;
-    }
-
     public int getRangeMax() {
         return rangeMax;
-    }
-
-    public void setRangeMax(int rangeMax) {
-        this.rangeMax = rangeMax;
     }
 
     public int getMissCount() {
@@ -46,7 +56,7 @@ public class Model {
         this.missCount = missCount;
     }
 
-    public enum Result { LESS, HIT, MORE }
+    public static enum Result { LESS, HIT, MORE }
     
     public Result processValue(int value) {
         if (value == random) {

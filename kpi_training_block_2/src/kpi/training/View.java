@@ -1,6 +1,6 @@
 package kpi.training;
 
-public class View {
+public final class View {
     // Text's constants
     public static final String INPUT_INT_DATA = "Input INT value = ";
     
