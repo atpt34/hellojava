@@ -1,11 +1,13 @@
 package ua.training.tasktwo;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.RandomAccess;
 import java.util.Set;
 
 
@@ -27,17 +29,14 @@ public class ProxiedArrayList<T> implements InvocationHandler {
     
     private final List<T> list;
     
-    @SuppressWarnings("unchecked")
     public static <T> List<T> newInstance() {
-        return (List<T>) Proxy.newProxyInstance(ArrayList.class.getClass().getClassLoader(), 
-                new Class<?>[]{List.class}, 
-                new ProxiedArrayList<T>());
+        return newInstance(new ArrayList<>());
     }
     
     @SuppressWarnings("unchecked")
     public static <T> List<T> newInstance(List<T> list) {
         return (List<T>) Proxy.newProxyInstance(ArrayList.class.getClass().getClassLoader(), 
-                new Class<?>[]{List.class}, 
+                new Class<?>[]{List.class, RandomAccess.class, Cloneable.class, Serializable.class}, 
                 new ProxiedArrayList<T>(list));
     }
     
@@ -52,7 +51,6 @@ public class ProxiedArrayList<T> implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        System.out.println(methodName);  
         if (ILLEGAL_METHOD_NAMES.contains(methodName)) {
             throw new UnsupportedOperationException("illegal method!");
         }
