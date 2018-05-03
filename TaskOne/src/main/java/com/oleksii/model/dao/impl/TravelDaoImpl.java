@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.oleksii.model.dao.CrudDAO;
+import com.oleksii.model.dao.TravelDAO;
 import com.oleksii.model.entity.Travel;
 import com.oleksii.model.entity.TravelType;
 import com.oleksii.model.util.DBConnection;
 
-public class TravelDaoImpl implements CrudDAO<Travel, Integer> {
+public class TravelDaoImpl implements TravelDAO {
 
     private static final String TRAVEL_START_DATE = "startDate";
     private static final String TRAVEL_COST = "cost";

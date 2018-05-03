@@ -11,16 +11,24 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-//@NonThreadSafe
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+/**
+ * 
+ * Class encapsulates single connection to db.
+ * Need to use DataSource for connection pooling
+ * Statements left open.
+ * 
+ * @NonThreadSafe
+ * @author oleksiiubuntu
+ * @version 1.1
+ */
 public class DBConnection {
     
     private static final String DATABASE_PROPERTIES = "database";
     private static final ResourceBundle DATABASE_BUNDLE = ResourceBundle.getBundle(DATABASE_PROPERTIES);
-
-//    private static final String SQLDB_DRIVER = "org.postgresql.Driver";
-//    private static final String CONNECTION_URL = "jdbc:postgresql://localhost:5432/travel";
-//    private static final String CONNECTION_USER = "lexa";
-//    private static final String CONNECTION_PASS = "lexa";
     private static final String SQLDB_DRIVER = DATABASE_BUNDLE.getString("db.driver");
     private static final String CONNECTION_URL = DATABASE_BUNDLE.getString("db.url");
     private static final String CONNECTION_USER = DATABASE_BUNDLE.getString("db.user");
@@ -54,7 +62,18 @@ public class DBConnection {
     private static Connection getConnection() {
         return CONNECTION;
     }
+    
+    public static void closeConnection() {
+        try {
+            getConnection().close();
+        } catch (SQLException e) {
+            new RuntimeException(e);
+        }
+    }
 
+    /*
+     * If close statement, then resultset will be empty
+     */
     public static ResultSet makeUpdate(String sql, Object[] params) throws SQLException {
         checkQueryParams(sql, params);
         synchronized (LOCK) {
@@ -70,9 +89,10 @@ public class DBConnection {
     public static ResultSet makeSelect(String sql, Object[] params) throws SQLException {
         checkQueryParams(sql, params);
         synchronized (LOCK) {
-            PreparedStatement prepareStatement = CONNECTION.prepareStatement(sql);
-            setPreparedStatementParams(params, prepareStatement);
-            ResultSet rs = prepareStatement.executeQuery();
+            ResultSet rs = null;
+              PreparedStatement prepareStatement = CONNECTION.prepareStatement(sql);
+              setPreparedStatementParams(params, prepareStatement);
+              rs = prepareStatement.executeQuery();
             CONNECTION.commit();
             return rs;
         }
@@ -94,5 +114,26 @@ public class DBConnection {
     private static void checkQueryParams(String sql, Object[] params) {
         Objects.requireNonNull(sql);
         Objects.requireNonNull(params);
+    }
+    
+    private static DataSource dataSource;
+    
+    static {
+        dataSource = Objects.requireNonNull(initDataSource());
+    }
+
+    private static DataSource initDataSource() {
+        try {
+            InitialContext initContext = new InitialContext();
+            dataSource = (DataSource) initContext.lookup("java:comp/env/jdbc/travel");
+            System.out.println(dataSource);
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+        return dataSource;
+    }
+    
+    public static DataSource getDataSource() {
+        return dataSource;
     }
 }

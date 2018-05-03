@@ -85,7 +85,8 @@ public class Travel extends AbstractEntity<Integer> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Travel [id=").append(super.getId()).append(", name=").append(name).append(", type=")
+        builder.append("Travel identityHashCode:").append(System.identityHashCode(this))
+                .append(" [id=").append(super.getId()).append(", name=").append(name).append(", type=")
                 .append(type).append(", transport=").append(transport).append(", start=").append(start)
                 .append(", cost=").append(cost).append("]");
         return builder.toString();

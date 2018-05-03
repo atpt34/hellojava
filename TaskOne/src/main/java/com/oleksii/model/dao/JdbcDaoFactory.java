@@ -7,11 +7,11 @@ import com.oleksii.model.entity.Travel;
 
 public class JdbcDaoFactory extends DaoFactory {
     
-    private static CrudDAO<Travel, Integer> td;
+    private static TravelDAO td;
     private static CrudDAO<Order, Integer> od;
 
     @Override
-    public CrudDAO<Travel, Integer> getTravelDao() {        
+    public TravelDAO getTravelDao() {        
         if (td == null) {
             synchronized (TravelDaoImpl.class) {
                 if (td == null) {

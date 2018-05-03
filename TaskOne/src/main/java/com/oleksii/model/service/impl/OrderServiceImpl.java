@@ -1,5 +1,7 @@
 package com.oleksii.model.service.impl;
 
+import java.util.List;
+
 import com.oleksii.model.dao.CrudDAO;
 import com.oleksii.model.dao.DaoFactory;
 import com.oleksii.model.entity.Order;
@@ -13,6 +15,11 @@ public class OrderServiceImpl implements OrderService {
     public boolean makeOrder(Order order) {
         crud.create(order);
         return true;
+    }
+
+    @Override
+    public List<Order> findAll() {
+        return crud.findAll();
     }
 
 }

@@ -26,6 +26,8 @@
     <br>
         <a href="${pageContext.request.contextPath}/travels/travels"><fmt:message key="page.title"/></a>
     <br>
+        <a href="${pageContext.request.contextPath}/travels/orders"><fmt:message key="page.orders"/></a>
+     <br>
 
         <form method="GET" action="${pageContext.request.contextPath}/travels/changeLanguage">
             <select name="lan" size="1">

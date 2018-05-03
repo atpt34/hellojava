@@ -2,20 +2,23 @@ package com.oleksii.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.oleksii.controller.command.Command;
 import com.oleksii.controller.command.impl.ChangeLanguage;
 import com.oleksii.controller.command.impl.DefaultCommand;
 
 import com.oleksii.controller.command.impl.Exception;
-import com.oleksii.controller.command.impl.LogOut;
-import com.oleksii.controller.command.impl.Login;
+import com.oleksii.controller.command.impl.ListOrders;
+
 import com.oleksii.controller.command.impl.Ordering;
 import com.oleksii.controller.command.impl.ProcessOrder;
 import com.oleksii.controller.command.impl.ProcessTravelCreate;
@@ -28,10 +31,10 @@ import com.oleksii.controller.command.impl.TravelsDelete;
 import com.oleksii.controller.command.impl.TravelsEdit;
 import com.oleksii.controller.command.impl.TravelsSelectByType;
 import com.oleksii.controller.command.impl.TravelsSort;
+import com.oleksii.model.util.DBConnection;
 
 public class TravelServlet extends HttpServlet {
 
-    
     private static final String COMMAND_PROCESS_ORDER = "processOrder";
     private static final String COMMAND_PROCESS_TRAVEL_EDIT = "processEdit";
     private static final String COMMAND_PROCESS_TRAVEL_UPDATE = "processUpdate";
@@ -40,14 +43,13 @@ public class TravelServlet extends HttpServlet {
     private static final String COMMAND_TRAVELS = "travels";
     private static final String COMMAND_EXCEPTION = "exception";
     private static final String COMMAND_REGISTRATION = "registration";
-    private static final String COMMAND_LOGIN = "login";
-    private static final String COMMAND_LOGOUT = "logout";
     private static final String COMMAND_CHANGE_LANGUAGE = "changeLanguage";
     private static final String COMMAND_TRAVELS_SORT = "travelsSort";
     private static final String COMMAND_TRAVELS_DELETE = "travelsDelete";
     private static final String COMMAND_TRAVELS_EDIT = "travelsEdit";
     private static final String COMMAND_TRAVELS_CREATE = "travelsCreate";
     private static final String COMMAND_TRAVELS_SELECT_BY_TYPE = "travelsSelectByType";
+    private static final String COMMAND_ORDERS = "orders";
     
     private static final Command COMMAND_DEFAULT = new DefaultCommand();
     
@@ -58,9 +60,10 @@ public class TravelServlet extends HttpServlet {
         commands = new HashMap<>();
     }
 
-    public void init() {
-        commands.put(COMMAND_LOGOUT, new LogOut());
-        commands.put(COMMAND_LOGIN, new Login());
+    public void init(ServletConfig servletConfig) {
+        servletConfig.getServletContext().setAttribute("loggedUsers", new HashSet<String>());
+        
+
         commands.put(COMMAND_REGISTRATION, new Registration());
         commands.put(COMMAND_EXCEPTION, new Exception());
         commands.put(COMMAND_CHANGE_LANGUAGE, new ChangeLanguage());
@@ -71,6 +74,7 @@ public class TravelServlet extends HttpServlet {
         commands.put(COMMAND_TRAVELS_CREATE, new TravelsCreate());
         commands.put(COMMAND_TRAVELS_SELECT_BY_TYPE, new TravelsSelectByType());
         commands.put(COMMAND_ORDER, new Ordering());
+        commands.put(COMMAND_ORDERS, new ListOrders());
         commands.put(COMMAND_PROCESS_ORDER, new ProcessOrder());
         commands.put(COMMAND_PROCESS_TRAVEL_EDIT, new ProcessTravelEdit());
         commands.put(COMMAND_PROCESS_TRAVEL_UPDATE, new ProcessTravelUpdate());
@@ -90,6 +94,12 @@ public class TravelServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(true);
+        System.out.println("Session " + session);
+        System.out.println("Session id " + session.getId());
+        System.out.println("Created at " + session.getCreationTime());
+        System.out.println("last access at " + session.getLastAccessedTime());
+        session.setAttribute("user", "lexa");
         String path = request.getRequestURI();
 
         System.out.println(path);
@@ -99,5 +109,10 @@ public class TravelServlet extends HttpServlet {
         String page = command.execute(request);
         request.getRequestDispatcher(page).forward(request, response);
 
+    }
+       
+    @Override
+    public void destroy() {
+        DBConnection.closeConnection();
     }
 }

@@ -5,15 +5,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.oleksii.model.dao.CrudDAO;
+
 import com.oleksii.model.dao.DaoFactory;
+import com.oleksii.model.dao.TravelDAO;
 import com.oleksii.model.entity.Travel;
 import com.oleksii.model.entity.TravelType;
 import com.oleksii.model.service.TravelService;
 
 public class TravelServiceImpl implements TravelService {
 
-    private final CrudDAO<Travel, Integer> crud = DaoFactory.getInstance().getTravelDao();
+    private final TravelDAO crud = DaoFactory.getInstance().getTravelDao();
 
     @Override
     public List<Travel> findAll() {
@@ -23,12 +24,13 @@ public class TravelServiceImpl implements TravelService {
     @Override
     public List<Travel> sortAllByCost() {
         List<Travel> all = crud.findAll();
-        Collections.sort(all, new Comparator<Travel>() {
-            @Override
-            public int compare(Travel t1, Travel t2) {
-                return t1.getCost() - t2.getCost();
-            }
-        });
+//        Collections.sort(all, new Comparator<Travel>() {
+//            @Override
+//            public int compare(Travel t1, Travel t2) {
+//                return t1.getCost() - t2.getCost();
+//            }
+//        });
+        Collections.sort(all, (t1, t2) -> t1.getCost() - t2.getCost());
         return all;
     }
 
@@ -36,11 +38,14 @@ public class TravelServiceImpl implements TravelService {
     public List<Travel> findByTravelType(TravelType type) {
         List<Travel> all = crud.findAll();
         List<Travel> result = new ArrayList<Travel>();
-        for (Travel travel : all) {
-            if (travel.getType() == type) {
-                result.add(travel);
-            }
-        }
+//        for (Travel travel : all) {
+//            if (travel.getType() == type) {
+//                result.add(travel);
+//            }
+//        }
+        all.stream()
+        .filter(t -> t.getType() == type)
+        .forEach(result::add);
         return result;
     }
 

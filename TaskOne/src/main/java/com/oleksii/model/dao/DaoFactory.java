@@ -1,24 +1,18 @@
 package com.oleksii.model.dao;
 
 import com.oleksii.model.entity.Order;
-import com.oleksii.model.entity.Travel;
 
 public abstract class DaoFactory {
     
-    private static DaoFactory td;
+    private static class DaoFactoryHolder {
+        static final DaoFactory td = new JdbcDaoFactory();
+    }
     
     public static DaoFactory getInstance() {
-        if (td == null) {
-            synchronized (DaoFactory.class) {
-                if (td == null) {
-                    td = new JdbcDaoFactory();
-                }
-            }
-        }
-        return td;
+        return DaoFactoryHolder.td;
     }
 
-    public abstract CrudDAO<Travel, Integer> getTravelDao(); 
+    public abstract TravelDAO getTravelDao(); 
     
     public abstract CrudDAO<Order, Integer> getOrderDao(); 
 

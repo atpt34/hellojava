@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>ua.training</groupId>
-  <artifactId>MavenWebapp</artifactId>
+  <artifactId>TravelsWebapp</artifactId>
   <packaging>war</packaging>
   <version>1</version>
   <name>Travel orderings</name>
