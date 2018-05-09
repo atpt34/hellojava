@@ -1,7 +1,7 @@
 
-sudo su postgres
-psql
-\l
+-- sudo su postgres
+-- psql
+-- \l
 CREATE DATABASE Travel;
 CREATE USER lexa WITH PASSWORD 'lexa';
 GRANT ALL PRIVILEGES ON DATABASE "travel" to lexa;
