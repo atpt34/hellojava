@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -29,8 +28,7 @@ class BiXor {
     static int getOneFromPairsHashed(int[] arr) {
         Map<Integer, Integer> map = new HashMap<>();
         for (int a : arr) {
-            map.putIfAbsent(a, 0);
-            map.compute(a, (k, v) -> v = v + 1);
+            map.merge(a, 1, (k, v) -> v = v + 1);
         }
         for(Entry<Integer, Integer> e : map.entrySet()) {
             if (e.getValue() == 1) {

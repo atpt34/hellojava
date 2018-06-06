@@ -235,6 +235,34 @@ public class Algorithms {
         return res;
     }
     
+    public static int[] selectionSort(int[] arr) {
+        return arr;
+    }
+    
+    public static int[] insertionSort(int[] arr) {
+        return arr;
+    }
+    
+    public static int[] bubbleSort(int[] arr) {
+        return arr;
+    }
+    
+    private static final int[] SHELLSORT_GAPS = new int[] { 701, 301, 132, 57, 23, 10, 4, 1};
+    
+    public static int[] shellSort(int[] arr) {
+        for(int gap : SHELLSORT_GAPS) {
+            for (int i = gap; i < arr.length; i++) {
+                int tmp = arr[i];
+                int j = i;
+                for (; j >= gap && arr[j - gap] > tmp; j -= gap) {
+                    arr[j] = arr[j - gap];
+                }
+                arr[j] = tmp;
+            }
+        }
+        return arr;
+    }
+    
     public static int[] heapSort(int[] arr) {
         Queue<Integer> q = new PriorityQueue<>();
         for (Integer i : arr) {

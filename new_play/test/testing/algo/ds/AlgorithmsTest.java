@@ -11,6 +11,15 @@ import org.junit.Test;
 
 public class AlgorithmsTest {
 
+    private static final int[] SMALL_ARRAY = new int[] {2, -4, 3, -1};
+    private static final int[] SMALL_ARRAY_SORTED; 
+    static {
+        int[] sorted = SMALL_ARRAY.clone();
+        Arrays.sort(sorted);
+        SMALL_ARRAY_SORTED = sorted;
+        System.out.println(Arrays.toString(SMALL_ARRAY));
+        System.out.println(Arrays.toString(SMALL_ARRAY_SORTED));
+    }
     private static final int[] SIMPLE_ARRAY = new int[]{ -3, 14, 0, -13, 27, 5, -2, 4, 23, 7 };
     private static final int[] SIMPLE_ARRAY_SORTED = new int[]{ -13, -3, -2, 0, 4, 5, 7, 14, 23, 27 };
     
@@ -176,6 +185,18 @@ public class AlgorithmsTest {
         int[] actual = heapSort(SIMPLE_ARRAY);
         final int[] expected = SIMPLE_ARRAY_SORTED;
         assertArrayEquals(expected, actual);
+
+        assertArrayEquals(SMALL_ARRAY_SORTED, heapSort(SMALL_ARRAY));
+    }
+    
+    
+    @Test
+    public void testShellSort() {
+        int[] actual = shellSort(SIMPLE_ARRAY);
+        final int[] expected = SIMPLE_ARRAY_SORTED;
+        assertArrayEquals(expected, actual);
+        
+        assertArrayEquals(SMALL_ARRAY_SORTED, shellSort(SMALL_ARRAY));
     }
 
 }
