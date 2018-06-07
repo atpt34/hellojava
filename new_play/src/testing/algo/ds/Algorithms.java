@@ -1,13 +1,16 @@
 package testing.algo.ds;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 /**
  * Just some algorithms.
@@ -49,6 +52,12 @@ public class Algorithms {
             return 1;
         }
         return n * factorialRecursive(n - 1);
+    }
+    
+    public static BigInteger factorialBig(int n) {
+        return IntStream.rangeClosed(2, n)
+                        .mapToObj(BigInteger::valueOf)
+                        .reduce(BigInteger.ONE, (a, b) -> a = a.multiply(b));
     }
     
     // in JLS: a == (a / b) * b + a % b
@@ -185,12 +194,7 @@ public class Algorithms {
     // Sorting and searching
     
     public static int linearSearch(int[] arr, int elem) {
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == elem) {
-                return i;
-            }
-        }
-        return -1; // no such elem in arr
+        return IntStream.range(0, arr.length).filter(i -> arr[i] == elem).findFirst().getAsInt();
     }
     
     public static int binarySearchIter(int[] arr, int elem) {
@@ -227,12 +231,13 @@ public class Algorithms {
         return binarySearchRecHelper(arr, elem, 0, arr.length - 1);
     }
     
+    /*
+     * Sorts distinct ints in range 0...999
+     */
     public static int[] bitSort(int[] arr) {
-        
-        int[] res = new int[arr.length];
-        System.arraycopy(arr, 0, res, 0, res.length);
-        // impl
-        return res;
+        BitSet bs = new BitSet(1000);
+        IntStream.of(arr).forEach(bs::set);
+        return bs.stream().toArray();
     }
     
     public static int[] selectionSort(int[] arr) {

@@ -3,6 +3,7 @@ package testing.algo.ds;
 import static org.junit.Assert.*;
 import static testing.algo.ds.Algorithms.*;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -12,13 +13,16 @@ import org.junit.Test;
 public class AlgorithmsTest {
 
     private static final int[] SMALL_ARRAY = new int[] {2, -4, 3, -1};
-    private static final int[] SMALL_ARRAY_SORTED; 
+    private static final int[] SMALL_ARRAY_SORTED;
+    private static final int[] SMALL_NONNEGATIVE_DISTINCT_ARRAY = new int[] {92, 5, 111, 10, 503, 0, 4, 12, 17, 888, 103, 999, 93, 667, 19};
+    private static final int[] SMALL_NONNEGATIVE_DISTINCT_ARRAY_SORTED; 
     static {
         int[] sorted = SMALL_ARRAY.clone();
+        int[] clone2 = SMALL_NONNEGATIVE_DISTINCT_ARRAY.clone();
         Arrays.sort(sorted);
+        Arrays.sort(clone2);
         SMALL_ARRAY_SORTED = sorted;
-        System.out.println(Arrays.toString(SMALL_ARRAY));
-        System.out.println(Arrays.toString(SMALL_ARRAY_SORTED));
+        SMALL_NONNEGATIVE_DISTINCT_ARRAY_SORTED = clone2;
     }
     private static final int[] SIMPLE_ARRAY = new int[]{ -3, 14, 0, -13, 27, 5, -2, 4, 23, 7 };
     private static final int[] SIMPLE_ARRAY_SORTED = new int[]{ -13, -3, -2, 0, 4, 5, 7, 14, 23, 27 };
@@ -60,6 +64,19 @@ public class AlgorithmsTest {
         System.out.println(f.apply(new Pair(Integer.MIN_VALUE, Integer.MIN_VALUE)));
         assertTrue(preCondition(Integer.MIN_VALUE, Integer.MAX_VALUE));
         System.out.println(f.apply(new Pair(Integer.MIN_VALUE, Integer.MAX_VALUE)));
+    }
+    
+    @Test
+    public void testBigFactorial() throws Exception {
+        assertEquals(BigInteger.ONE, factorialBig(0));
+        assertEquals(BigInteger.ONE, factorialBig(1));
+        assertEquals(BigInteger.TWO, factorialBig(2));
+        assertEquals(BigInteger.valueOf(3628800), factorialBig(10));
+        assertEquals(BigInteger.valueOf(121645100408832000L), factorialBig(19));
+        assertEquals(new BigInteger("2432902008176640000"), factorialBig(20));
+        assertEquals(new BigInteger("93326215443944152681699238856266700490715968264381621468592"
+                + "963895217599993229915608941463976156518286253697920827223758251185210916864000"
+                + "000000000000000000000"), factorialBig(100));
     }
     /*
     @Test
@@ -144,20 +161,24 @@ public class AlgorithmsTest {
     @Test
     public void testAllPermutations() {
         System.out.println("AllPermutations: ");
-        List<String> allPermutations = allPermutations("abc");
-        for (String s: allPermutations) {
+        List<String> actual = allPermutations("abc");
+        for (String s: actual) {
             System.out.println(s);
         }
+        List<String> expected = List.of("abc", "acb", "bac", "bca", "cab", "cba");
+        assertEquals(expected, actual);
     }
 
     
     @Test
     public void testAllSubsets() {
         System.out.println("AllSubsets: ");
-        List<String> allSubsets = allSubsets("abc");
-        for (String s : allSubsets) {
+        List<String> actual = allSubsets("abc");
+        for (String s : actual) {
             System.out.println(s);
         }
+        List<String> expected = List.of("", "a", "b", "ab", "c", "ac", "bc", "abc");
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -199,4 +220,14 @@ public class AlgorithmsTest {
         assertArrayEquals(SMALL_ARRAY_SORTED, shellSort(SMALL_ARRAY));
     }
 
+    @Test
+    public void testBitSort() {
+        assertArrayEquals(SMALL_NONNEGATIVE_DISTINCT_ARRAY_SORTED,
+                bitSort(SMALL_NONNEGATIVE_DISTINCT_ARRAY));
+    }
+    
+    @Test
+    public void testName() throws Exception {
+        
+    }
 }
