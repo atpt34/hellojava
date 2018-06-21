@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
@@ -160,35 +161,24 @@ public class Algorithms {
     
     public static int[] removeDuplicates(int[] arr) {
         Set<Integer> set = new HashSet<>(arr.length); // approx size
-        for (int e : arr) {
-            set.add(e);
-        }
-        int[] res = new int[set.size()];
-        int i = 0;
-        for (int e : set) {
-            res[i++] = e;
-        }
-        return res;
+        IntStream.of(arr).forEach(set::add);
+        return set.stream().mapToInt(x -> x).toArray();
     }
+    
+    public static int[] removeDuplicatesWoSort(int[] arr) {
+        return IntStream.of(arr).distinct().toArray();
+    }
+    
     public static int[] removeDuplicatesSort(int[] arr) {
-        if (arr.length < 2) {
-            return arr;
-        }
-        Arrays.sort(arr);
         ArrayList<Integer> arrayList = new ArrayList<>(arr.length);
-        int prev = arr[0];
-        arrayList.add(prev);
-        for (int elem : arr) {
-            if (elem != prev) {
-                arrayList.add(elem);
-                prev = elem;
-            }
-        }
-        int[] res = new int[arrayList.size()];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = arrayList.get(i);
-        }
-        return res;
+        int min = IntStream.of(arr).min().getAsInt();
+        arrayList.add(min);
+        IntStream.of(arr).sorted().reduce(min, (x, y) -> {if(x != y) arrayList.add(y); return y;});
+        return arrayList.stream().mapToInt(x -> x).toArray();
+    }
+    
+    public static int[] removeDuplicatesSortStream(int[] arr) {
+        return IntStream.of(arr).sorted().distinct().toArray();
     }
     
     // Sorting and searching
@@ -214,6 +204,8 @@ public class Algorithms {
         }
         return -1;
     }
+    
+    
     private static int binarySearchRecHelper(int[] arr, int elem, int l, int r) {
         if (l > r)
             return -1;
@@ -231,6 +223,7 @@ public class Algorithms {
         return binarySearchRecHelper(arr, elem, 0, arr.length - 1);
     }
     
+    
     /*
      * Sorts distinct ints in range 0...999
      */
@@ -240,21 +233,61 @@ public class Algorithms {
         return bs.stream().toArray();
     }
     
-    public static int[] selectionSort(int[] arr) {
-        return arr;
+    public static void arraySwap(int[] array, int i, int j) {
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
     }
     
+    // pure function makes new copy s.t.
+    // there is no mutability side-effects
+    public static int[] selectionSort(int[] arr) {
+        int[] array = new int[arr.length];
+        System.arraycopy(arr, 0, array, 0, arr.length);
+        for (int i = 0; i < array.length - 1; i++) {
+            int min = i;
+            for (int j = i + 1; j < array.length; j++) {
+                if (array[j] < array[min]) {
+                    min = j;
+                }
+            }
+            arraySwap(array, i, min);
+        }
+        return array;
+    }
+
     public static int[] insertionSort(int[] arr) {
-        return arr;
+        int[] array = new int[arr.length];
+        System.arraycopy(arr, 0, array, 0, arr.length);
+        for (int i = 1; i < array.length; i++) {
+            int j = i;
+            int e = array[j];
+            while (j > 0 && (e < array[j - 1])) {
+                array[j] = array[--j];
+            }
+            array[j] = e;
+        }
+        return array;
     }
     
     public static int[] bubbleSort(int[] arr) {
-        return arr;
+        int[] array = new int[arr.length];
+        System.arraycopy(arr, 0, array, 0, arr.length);
+        for (int i = 0; i < array.length - 1; i++) {
+            for (int j = 0; j < array.length - 1 - i; j++) {
+                if (array[j] > array[j + 1]) {
+                    arraySwap(array, j, j + 1);
+                }
+            }
+        }
+        return array;
     }
     
     private static final int[] SHELLSORT_GAPS = new int[] { 701, 301, 132, 57, 23, 10, 4, 1};
     
-    public static int[] shellSort(int[] arr) {
+    public static int[] shellSort(int[] array) {
+        int[] arr = new int[array.length];
+        System.arraycopy(array, 0, arr, 0, arr.length);
         for(int gap : SHELLSORT_GAPS) {
             for (int i = gap; i < arr.length; i++) {
                 int tmp = arr[i];
@@ -268,7 +301,9 @@ public class Algorithms {
         return arr;
     }
     
-    public static int[] heapSort(int[] arr) {
+    public static int[] heapSort(int[] array) {
+        int[] arr = new int[array.length];
+        System.arraycopy(array, 0, arr, 0, arr.length);
         Queue<Integer> q = new PriorityQueue<>();
         for (Integer i : arr) {
             q.add(i);
@@ -284,6 +319,7 @@ public class Algorithms {
         return res;
     }
     
+    // quicksort & mergesort
     
     // graphs
     // DFS, BFS

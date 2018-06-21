@@ -6,7 +6,10 @@ import static testing.algo.ds.Algorithms.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -28,6 +31,7 @@ public class AlgorithmsTest {
     private static final int[] SIMPLE_ARRAY_SORTED = new int[]{ -13, -3, -2, 0, 4, 5, 7, 14, 23, 27 };
     
     private static final int[] DUPLICATES_ARRAY = {3, -4, 3, 5, -4, 1, 3, 2, 5, 7, 1, -7, 5, 0, 0};
+    private static final int[] DUPLICATES_ARRAY_SORTED = IntStream.of(DUPLICATES_ARRAY).sorted().toArray();
     private static final int[] NO_DUPLICATES_ARRAY = {-7, -4, 0, 1, 2, 3, 5, 7};
 
     @Test
@@ -109,15 +113,7 @@ public class AlgorithmsTest {
         fail("Not yet implemented");
     }
 
-    @Test
-    public void testGcd() {
-        fail("Not yet implemented");
-    }
 
-    @Test
-    public void testGcdRecursive() {
-        fail("Not yet implemented");
-    }
 
     @Test
     public void testLcm() {
@@ -130,6 +126,26 @@ public class AlgorithmsTest {
     }
 
     */
+    
+    @Test
+    public void testGcd() {
+        for (int i = 1000; i < 10000; i += 31) {
+            for (int j = 999990000; j < 1000000000; j += 3) {
+                BigInteger expected = BigInteger.valueOf(i).gcd(BigInteger.valueOf(j));
+                assertEquals(expected.intValue(), gcd(i, j));
+            }
+        }
+    }
+
+    @Test
+    public void testGcdRecursive() {
+        for (int j = 999990000; j < 1000000000; j += 7) {
+            for (int i = 1000; i < 10000; i += 11) {
+                BigInteger expected = BigInteger.valueOf(i).gcd(BigInteger.valueOf(j));
+                assertEquals(expected.intValue(), gcdRecursive(i, j));
+            }
+        }
+    }
     
     @Test
     public void testLinearSearch() {
@@ -188,26 +204,34 @@ public class AlgorithmsTest {
     }
     
     @Test
+    public void testDuplicatesSortStream() {
+        int[] actual = removeDuplicatesSortStream(DUPLICATES_ARRAY);
+        assertArrayEquals(NO_DUPLICATES_ARRAY, actual);
+    }
+    
+    @Test
+    public void testDuplicatesWoSort() {
+        int[] result = removeDuplicatesWoSort(DUPLICATES_ARRAY);
+        Set<Integer> actual = IntStream.of(result).boxed().collect(Collectors.toSet());
+        Set<Integer> expected = IntStream.of(NO_DUPLICATES_ARRAY).boxed().collect(Collectors.toSet());
+        assertEquals(expected, actual);
+    }
+    
+    @Test
     public void testDuplicates() {
         int[] actual = removeDuplicates(DUPLICATES_ARRAY);
         Arrays.sort(actual);
         assertArrayEquals(NO_DUPLICATES_ARRAY, actual);
     }
     
-    /*
-    @Test
-    public void testBitSort() {
-        fail("Not yet implemented");
-    }
-    */
-
+    
     @Test
     public void testHeapSort() {
         int[] actual = heapSort(SIMPLE_ARRAY);
         final int[] expected = SIMPLE_ARRAY_SORTED;
         assertArrayEquals(expected, actual);
-
         assertArrayEquals(SMALL_ARRAY_SORTED, heapSort(SMALL_ARRAY));
+        assertArrayEquals(DUPLICATES_ARRAY_SORTED, heapSort(DUPLICATES_ARRAY));
     }
     
     
@@ -216,8 +240,8 @@ public class AlgorithmsTest {
         int[] actual = shellSort(SIMPLE_ARRAY);
         final int[] expected = SIMPLE_ARRAY_SORTED;
         assertArrayEquals(expected, actual);
-        
         assertArrayEquals(SMALL_ARRAY_SORTED, shellSort(SMALL_ARRAY));
+        assertArrayEquals(DUPLICATES_ARRAY_SORTED, shellSort(DUPLICATES_ARRAY));
     }
 
     @Test
@@ -227,7 +251,40 @@ public class AlgorithmsTest {
     }
     
     @Test
-    public void testName() throws Exception {
-        
+    public void testArraySwap() throws Exception {
+        int[] arr = new int[] { 0, 1, 2};
+        arraySwap(arr, 0, 0);
+        assertArrayEquals(new int[] {0, 1, 2}, arr);
+        arraySwap(arr, 0, 1);
+        assertArrayEquals(new int[] {1, 0, 2}, arr);
+        arraySwap(arr, 2, 0);
+        assertArrayEquals(new int[] {2, 0, 1}, arr);
+    }
+    
+    @Test
+    public void testSelectionSort() throws Exception {
+        int[] actual = selectionSort(SIMPLE_ARRAY);
+        int[] expected = SIMPLE_ARRAY_SORTED;
+        assertArrayEquals(expected, actual);
+        assertArrayEquals(SMALL_ARRAY_SORTED, selectionSort(SMALL_ARRAY));
+        assertArrayEquals(DUPLICATES_ARRAY_SORTED, selectionSort(DUPLICATES_ARRAY));
+    }
+    
+    @Test
+    public void testInsertionSort() throws Exception {
+        int[] actual = insertionSort(SIMPLE_ARRAY);
+        int[] expected = SIMPLE_ARRAY_SORTED;
+        assertArrayEquals(expected, actual);
+        assertArrayEquals(SMALL_ARRAY_SORTED, insertionSort(SMALL_ARRAY));
+        assertArrayEquals(DUPLICATES_ARRAY_SORTED, insertionSort(DUPLICATES_ARRAY));
+    }
+    
+    @Test
+    public void testBubbleSort() throws Exception {
+        int[] actual = bubbleSort(SIMPLE_ARRAY);
+        int[] expected = SIMPLE_ARRAY_SORTED;
+        assertArrayEquals(expected, actual);
+        assertArrayEquals(SMALL_ARRAY_SORTED, bubbleSort(SMALL_ARRAY));
+        assertArrayEquals(DUPLICATES_ARRAY_SORTED, bubbleSort(DUPLICATES_ARRAY));
     }
 }
