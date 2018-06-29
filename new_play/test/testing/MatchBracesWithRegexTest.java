@@ -10,6 +10,29 @@ import org.junit.Test;
 
 class BraceMatcher {
     
+    public static boolean matchBracesSimple(String str) {
+        int stack = 0;
+        int start = 3;
+        int increment = start;
+        for (char c : str.toCharArray()) {
+            switch(c) {
+            case '(':
+                stack += increment;
+                increment++;
+                break;
+            case ')': 
+                if (increment == start) {
+                    return false;
+                }
+                --increment;
+                stack -= increment;
+                break;
+            default: return false;
+            }
+        }
+        return stack == 0;
+    }
+    
     public static boolean matchBraces(String str) {
         Map<Character, Integer> openings = Map.of('(', 1, '[', 2);
         Map<Character, Integer> closings = Map.of(')', 1, ']', 2);
@@ -41,6 +64,48 @@ class BraceMatcher {
 public class MatchBracesWithRegexTest {
 
     @Test
+    public void testMatchSimple() throws Exception {
+        assertTrue("empty doesn't match", BraceMatcher.matchBracesSimple(""));
+        
+        assertTrue(BraceMatcher.matchBracesSimple("()"));
+        
+        assertTrue(BraceMatcher.matchBracesSimple("()()"));
+        assertTrue(BraceMatcher.matchBracesSimple("(())"));
+        
+        assertTrue(BraceMatcher.matchBracesSimple("()()()"));
+        assertTrue(BraceMatcher.matchBracesSimple("(())()"));
+        assertTrue(BraceMatcher.matchBracesSimple("()(())"));
+        assertTrue(BraceMatcher.matchBracesSimple("(()())"));
+        assertTrue(BraceMatcher.matchBracesSimple("((()))"));
+        
+        assertTrue(BraceMatcher.matchBracesSimple("((())()()(()))()((())())()"));
+        
+        assertFalse(BraceMatcher.matchBracesSimple(")"));
+        assertFalse(BraceMatcher.matchBracesSimple("("));
+        
+        assertFalse(BraceMatcher.matchBracesSimple(")("));
+        assertFalse(BraceMatcher.matchBracesSimple("))"));
+        assertFalse(BraceMatcher.matchBracesSimple("(("));
+        
+        assertFalse(BraceMatcher.matchBracesSimple(")))"));
+        assertFalse(BraceMatcher.matchBracesSimple("))("));
+        assertFalse(BraceMatcher.matchBracesSimple(")()"));
+        assertFalse(BraceMatcher.matchBracesSimple(")(("));
+        assertFalse(BraceMatcher.matchBracesSimple("())"));
+        assertFalse(BraceMatcher.matchBracesSimple("()("));
+        assertFalse(BraceMatcher.matchBracesSimple("(()"));
+        assertFalse(BraceMatcher.matchBracesSimple("((("));
+        
+        assertFalse(BraceMatcher.matchBracesSimple("))(("));
+        assertFalse(BraceMatcher.matchBracesSimple(")()("));
+        assertFalse(BraceMatcher.matchBracesSimple("))()(("));
+        assertFalse(BraceMatcher.matchBracesSimple("())(()"));
+        assertFalse(BraceMatcher.matchBracesSimple("()())("));
+        assertFalse(BraceMatcher.matchBracesSimple("()()("));
+        assertFalse(BraceMatcher.matchBracesSimple("()()( "));
+        
+    }
+    @Test
     public void testMatchBraces() throws Exception {
         assertTrue(BraceMatcher.matchBraces(""));
         assertTrue(BraceMatcher.matchBraces("()"));
@@ -54,9 +119,17 @@ public class MatchBracesWithRegexTest {
         assertTrue(BraceMatcher.matchBraces("[([])]([()])"));
         assertTrue(BraceMatcher.matchBraces("[()[(([])[[]]()[([])])](()[])]"));
         
+        assertFalse(BraceMatcher.matchBraces(")"));
+        assertFalse(BraceMatcher.matchBraces("["));
+        assertFalse(BraceMatcher.matchBraces("))"));
+        assertFalse(BraceMatcher.matchBraces("[["));
+        assertFalse(BraceMatcher.matchBraces(")("));
+        assertFalse(BraceMatcher.matchBraces("]["));
+        assertFalse(BraceMatcher.matchBraces("(]"));
         assertFalse(BraceMatcher.matchBraces("(]"));
         assertFalse(BraceMatcher.matchBraces("[(])"));
     }
+    
     @Test
     public void testEmpty() throws Exception {
         assertTrue(BraceMatcher.matchBracesWithRegex(""));

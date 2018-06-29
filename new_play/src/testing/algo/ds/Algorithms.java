@@ -1,17 +1,22 @@
 package testing.algo.ds;
 
 import java.math.BigInteger;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 
 /**
  * Just some algorithms.
@@ -22,6 +27,14 @@ public class Algorithms {
     
     private Algorithms() {}
 
+    public static int bitNegation (int n) {
+        return ~n + 1;
+    }
+    
+    public static boolean isPowerOfTwo (int n) {
+        return (n & (n - 1)) == 0;
+    }
+    
     public static int nthPowerOfTwo(int n) {
         if (n < 0) {
             return 0;
@@ -233,6 +246,31 @@ public class Algorithms {
         return bs.stream().toArray();
     }
     
+    private static <T> void commonSelectionSort(Comparator<T> comp, List<T> list) {
+        for (int i = 0; i < list.size() - 1; i++) {
+            int min = i;
+            for (int j = i + 1; j < list.size(); j++) {
+                if (comp.compare(list.get(j), list.get(min)) < 0) {
+                    min = j;
+                }
+            }
+            Collections.swap(list, i, min);
+        }
+    }
+    
+    public static <T> List<T> selectionSortListWith(List<T> array, Comparator<T> comp) {
+        List<T> list = new ArrayList<>(array);
+        commonSelectionSort(comp, list);
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] selectionSortWith(T[] array, Comparator<T> comp) {
+        List<T> list = Stream.of(array).collect(Collectors.toList());
+        commonSelectionSort(comp, list);
+        return (T[]) list.toArray();
+    }
+    
     public static void arraySwap(int[] array, int i, int j) {
         int tmp = array[i];
         array[i] = array[j];
@@ -312,15 +350,95 @@ public class Algorithms {
         System.arraycopy(arr, 0, res, 0, res.length);
         for (int i = 0; i < arr.length; i++) {
             Integer poll = q.poll();
-//            System.out.println(poll);
             res[i] = poll;
         }
-//        System.out.println(Arrays.toString(res));
         return res;
     }
     
     // quicksort & mergesort
     
     // graphs
-    // DFS, BFS
+    public static class Vertex {
+        int n;
+        List<Vertex> adjacentVertices;
+        public Vertex(int n, List<Vertex> adjacentEdges) {
+            this.n = n;
+            this.adjacentVertices = adjacentEdges;
+        }
+        public int getN() {
+            return n;
+        }
+        public List<Vertex> getAdjacentEdges() {
+            return adjacentVertices;
+        }
+        public void setAdjacentEdges(List<Vertex> adjacentEdges) {
+            this.adjacentVertices = adjacentEdges;
+        }
+        @Override
+        public String toString() {
+            return "[" + n + " ]";
+        }
+    }
+    
+    public static List<Vertex> dfs(List<Vertex> graph) {
+        List<Vertex> order = new ArrayList<>(graph.size());
+        List<Boolean> visited = new ArrayList<>(graph.size());
+        Stream.generate(() -> false).limit(graph.size()).forEach(f -> visited.add(f));
+        for (Vertex vertex : graph) {
+            dfsHelper(graph, vertex, order, visited);
+        }
+        return order;
+    }
+
+    private static void dfsHelper(List<Vertex> graph, Vertex vertex, List<Vertex> order, List<Boolean> visited) {
+        if (visited.get(vertex.getN())) {
+            return;
+        }
+        visited.set(vertex.getN(), true);
+        order.add(vertex);
+        for (Vertex adjacent : vertex.getAdjacentEdges()) {
+            dfsHelper(graph, adjacent, order, visited);
+        }
+    }
+    
+    public static List<Vertex> dfsStack(List<Vertex> graph) {
+        List<Vertex> order = new ArrayList<>(graph.size());
+        List<Boolean> visited = new ArrayList<>(graph.size());
+        Stream.generate(() -> false).limit(graph.size()).forEach(f -> visited.add(f));
+        Deque<Vertex> stack = new ArrayDeque<>();
+        stack.push(graph.get(0));
+        while (!stack.isEmpty()) {
+            Vertex vertex = stack.pop();
+            if (visited.get(vertex.getN())) {
+                continue;
+            }
+            visited.set(vertex.getN(), Boolean.TRUE);
+            order.add(vertex);
+            for (int i = vertex.getAdjacentEdges().size() - 1; i >= 0; i--) {
+                Vertex adjacent = vertex.getAdjacentEdges().get(i);
+                stack.push(adjacent);
+            }
+        }
+        return order;
+    }
+    
+    public static List<Vertex> bfs(List<Vertex> graph) {
+        List<Vertex> order = new ArrayList<>(graph.size());
+        List<Boolean> visited = new ArrayList<>(graph.size());
+        Stream.generate(() -> false).limit(graph.size()).forEach(f -> visited.add(f));
+        Queue<Vertex> queue = new ArrayDeque<>();
+        queue.add(graph.get(0));
+        while (!queue.isEmpty()) {
+            Vertex vertex = queue.poll();
+            if (visited.get(vertex.getN())) {
+                continue;
+            }
+            visited.set(vertex.getN(), Boolean.TRUE);
+            order.add(vertex);
+            for (Vertex adjacent : vertex.getAdjacentEdges()) {
+                queue.add(adjacent);
+            }
+        }
+        return order;
+    }
 }
